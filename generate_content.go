@@ -8,9 +8,13 @@ import (
 	"google.golang.org/genai"
 )
 
-type AspectRatio int
+type GenerateParams struct {
+	prompt         string
+	numberOfImages int32
+	ratio          string
+}
 
-func generateImages(ctx context.Context, prompt string, numberOfImages int32, ratio string) ([]*genai.GeneratedImage, error) {
+func generateImages(ctx context.Context, params *GenerateParams) ([]*genai.GeneratedImage, error) {
 	client, err := genai.NewClient(
 		ctx,
 		&genai.ClientConfig{APIKey: os.Getenv("GEMINI_API_KEY")},
@@ -20,15 +24,15 @@ func generateImages(ctx context.Context, prompt string, numberOfImages int32, ra
 	}
 
 	config := &genai.GenerateImagesConfig{
-		NumberOfImages:   numberOfImages,
-		AspectRatio:      ratio,
+		NumberOfImages:   params.numberOfImages,
+		AspectRatio:      params.ratio,
 		PersonGeneration: "allow_all",
 	}
 
 	response, err := client.Models.GenerateImages(
 		ctx,
 		os.Getenv("IMAGEN_MODEL"),
-		prompt,
+		params.prompt,
 		config,
 	)
 	if err != nil {

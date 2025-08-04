@@ -7,6 +7,7 @@
 *.dll
 *.so
 *.dylib
+cli-imagen
 
 # Test binary, built with `go test -c`
 *.test
